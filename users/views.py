@@ -1,15 +1,15 @@
-from django.shortcuts import render, redirect
 from django.contrib.auth import login
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
 from .forms import RegisterForm
 
 
-def register_view(request):
-    if request.method == 'POST':
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            users = form.save()
-            login(request, users)
-            return redirect('dashboard')
-    else:
-        form = RegisterForm()
-    return render(request, 'users/register.html', {'form': form})
+class RegisterView(CreateView):
+    form_class = RegisterForm
+    template_name = 'users/register.html'
+    success_url = reverse_lazy('dashboard')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        login(self.request, self.object)
+        return response
