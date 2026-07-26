@@ -3,6 +3,12 @@
 {% block title %}Личный кабинет{% endblock %}
 
 {% block content %}
-  <h1>Личный кабинет</h1>
-  <p>Привет, {{ user.email }}!</p>
+  {% for bot in bots %}
+    <p>Пара {{ bot.pair }}</p>
+    <p>Сумма входа {{bot.entry_amount}}</p>
+    <p>Статус {{bot.status}}</p>
+    {% empty %}
+      <p>У вас пока нет ботов</p>
+      <p>Ты залогинен как: {{ user.email }}</p>
+  {% endfor %}
 {% endblock %}
