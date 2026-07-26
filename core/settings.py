@@ -1,4 +1,5 @@
 from pathlib import Path
+from datetime import timedelta
 
 
 import environ
@@ -134,3 +135,10 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
 CELERY_TIMEZONE = 'UTC'
+
+CELERY_BEAT_SCHEDULE = {
+    'bots':{
+        'task': 'bots.tasks.test_task',
+        'schedule': timedelta(seconds=3),
+    }
+}
