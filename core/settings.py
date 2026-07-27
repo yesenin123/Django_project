@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'users',
     'dashboard',
     'bots',
+    'cabinet'
 ]
 AUTH_USER_MODEL = 'users.user'
 
