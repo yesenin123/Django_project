@@ -7,7 +7,7 @@ class TradingView(LoginRequiredMixin, TemplateView):
 
 
 class BacktestView(LoginRequiredMixin, TemplateView):
-    template_name = 'cabinet/backtest.html'
+    template_name = 'cabinet/backtests.html'
 
 
 class AccountView(LoginRequiredMixin, TemplateView):

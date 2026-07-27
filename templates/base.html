@@ -5,7 +5,17 @@
     <title>{% block title %}Crypto Bot Platform{% endblock %}</title>
 </head>
 <body>
-    {% block content %}
-    {% endblock %}
+    <nav>
+        <ul>
+            <li><a href="{% url 'create_bots' %}">Создание бота</a></li>
+            <li><a href="{% url 'register' %}">Регистрация</a></li>
+            <li><a href="{% url 'dashboard' %}">Боты</a></li>
+            <li><a href="{% url 'trading' %}">Торговя</a></li>
+            <li><a href="{% url 'backtests' %}">Бектесты</a></li>
+            <li><a href="{% url 'account' %}">Личный аккаунт</a></li>
+        </ul>
+    </nav>
+        {% block content %}
+        {% endblock %}
 </body>
 </html>
