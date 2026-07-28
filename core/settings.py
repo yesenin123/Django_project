@@ -35,8 +35,10 @@ INSTALLED_APPS = [
     'users',
     'dashboard',
     'bots',
-    'cabinet'
+    'cabinet',
+    'exchanges',
 ]
+
 AUTH_USER_MODEL = 'users.user'
 
 LOGIN_URL = 'login'

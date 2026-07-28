@@ -6,4 +6,11 @@ class BotForm(forms.ModelForm):
 
     class Meta:
         model = Bot
-        fields = ['pair', 'entry_amount', 'take_profit_percent', 'status']
+        fields = [
+            'pair',
+            'entry_amount',
+            'take_profit_percent',
+            'status',
+            'exchanges_account',
+            'direction',
+        ]

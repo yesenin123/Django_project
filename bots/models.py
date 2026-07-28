@@ -1,6 +1,7 @@
 from django.db import models
 
 from users.models import User
+from exchanges.models import ExchangeAccount
 
 
 STATUS_CHOICES = [
@@ -11,6 +12,11 @@ STATUS_CHOICES = [
 DEAL_STATUS_CHOICES = [
     ("open", "Открыта"),
     ("closed", "Закрыта")
+]
+
+DIRECTION_CHOICES = [
+    ("long", "Длинная позиция"),
+    ("hort", "Короткая позиция"),
 ]
 
 
@@ -34,6 +40,16 @@ class Bot(models.Model):
     )
     created_at = models.DateTimeField(
         auto_now_add=True
+    )
+    exchanges_account = models.ForeignKey(
+        ExchangeAccount,
+        on_delete=models.SET_NULL,
+        related_name='exchanges',
+        null=True,
+    )
+    direction = models.CharField(
+        max_length=20,
+        choices=DIRECTION_CHOICES,
     )
 
 
