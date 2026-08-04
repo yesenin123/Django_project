@@ -1,5 +1,6 @@
 from pathlib import Path
 from datetime import timedelta
+from decimal import Decimal
 
 
 import environ
@@ -19,6 +20,18 @@ SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', default=False)
+
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True          # только https
+    SESSION_COOKIE_SECURE = True        # кука сессии не уйдёт по http
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 31536000      # браузер запомнит: только https
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'            # защита от кликджекинга
+    SESSION_COOKIE_HTTPONLY = True      # кука недоступна из JS
+    SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 ALLOWED_HOSTS = []
 
@@ -125,8 +138,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_URL = 'login'
-
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
@@ -139,9 +150,46 @@ CELERY_RESULT_SERIALIZER = 'json'
 
 CELERY_TIMEZONE = 'UTC'
 
+FERNET_KEY = env('FERNET_KEY')
+
+
+# Комиссия платформы с прибыли сделки, %
+PLATFORM_FEE_PERCENT = Decimal(env('PLATFORM_FEE_PERCENT', default='15'))
+
 CELERY_BEAT_SCHEDULE = {
-    'bots':{
-        'task': 'bots.tasks.test_task',
-        'schedule': timedelta(seconds=3),
-    }
+    'dispatch-running-bots': {
+        'task': 'bots.dispatch_running_bots',
+        'schedule': timedelta(seconds=10),
+    },
+    'sync-open-deals': {
+        'task': 'bots.sync_open_deals',
+        'schedule': timedelta(minutes=5),
+    },
+    'check-exchange-accounts': {
+        'task': 'exchanges.check_accounts',
+        'schedule': timedelta(hours=6),
+    },
+}
+
+# Логирование: следим, чтобы секреты никогда не попадали в логи
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {'format': '{levelname} {asctime} {name} {message}', 'style': '{'},
+    },
+    'handlers': {
+        'console': {'class': 'logging.StreamHandler', 'formatter': 'verbose'},
+        'file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': BASE_DIR / 'logs' / 'trading.log',
+            'maxBytes': 10 * 1024 * 1024,
+            'backupCount': 5,
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'bots': {'handlers': ['console', 'file'], 'level': 'INFO'},
+        'exchanges': {'handlers': ['console', 'file'], 'level': 'INFO'},
+    },
 }

@@ -9,6 +9,8 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('create_bots/', include('bots.urls')),
     path('cabinet/', include('cabinet.urls')),
+    path('bots/', include('bots.urls')),
+    path('exchanges/', include('exchanges.urls')),
     path('', include('dashboard.urls')),
 
 ]
